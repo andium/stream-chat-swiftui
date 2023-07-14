@@ -22,7 +22,7 @@ struct ChatInfoParticipantsView: View {
 
     var body: some View {
         LazyVStack {
-            ForEach(viewModel.participants) { participant in
+            ForEach(viewModel.displayedParticipants) { participant in
                     if ((chatClient.currentUserController().currentUser?.userRole == .admin || viewModel.createdByCurrentUser()) && chatClient.currentUserId != participant.id) {
                         HStack {
                             MessageAvatarView(avatarURL: participant.chatUser.imageURL)
