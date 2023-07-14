@@ -24,7 +24,7 @@ struct ChatInfoParticipantsView: View {
 
     var body: some View {
         List {
-            if chatClient.currentUserController().currentUser?.userRole == .admin {
+            if chatClient.currentUserController().currentUser?.userRole == .admin || viewModel.createdByCurrentUser() {
                 ForEach(participants) { participant in
                     HStack {
                         MessageAvatarView(avatarURL: participant.chatUser.imageURL)

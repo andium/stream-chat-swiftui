@@ -118,6 +118,10 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         }
     }
 
+    public func createdByCurrentUser() -> Bool {
+        return chatClient.currentUserId == channelController.channel?.createdBy?.id
+    }
+    
     public func onlineInfo(for user: ChatUser) -> String {
         if user.isOnline {
             return L10n.Message.Title.online
