@@ -23,7 +23,7 @@ struct ChatInfoParticipantsView: View {
     }
 
     var body: some View {
-        List {
+        LazyVStack {
             if (chatClient.currentUserController().currentUser?.userRole == .admin || viewModel.createdByCurrentUser()) {
                 ForEach(participants) { participant in
                     HStack {
