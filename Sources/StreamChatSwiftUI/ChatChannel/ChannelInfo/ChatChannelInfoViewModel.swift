@@ -198,6 +198,16 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         channelController.addMembers(userIds: [user.id])
         addUsersShown = false
     }
+    
+    public func removeUserFromConversation(id: String, completion: @escaping () -> Void) {
+        channelController.removeMembers(userIds: [id]) { [weak self] error in
+            if error != nil {
+                self?.errorShown = true
+            } else {
+                completion()
+            }
+        }
+    }
 
     // MARK: - private
 

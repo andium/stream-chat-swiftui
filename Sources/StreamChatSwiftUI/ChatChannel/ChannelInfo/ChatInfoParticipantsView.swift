@@ -44,7 +44,9 @@ struct ChatInfoParticipantsView: View {
                 }
                 .swipeActions(edge: .leading) {
                     Button(role: .destructive) {
-                        // delete the swiped participant here
+                        viewModel.removeUserFromConversation(id: participant.id) {
+                            debugPrint("\(participant.displayName) Removed")
+                        }
                     } label: {
                         Label("Remove User", systemImage: "minus.circle.fill")
                     }
