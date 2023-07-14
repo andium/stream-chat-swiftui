@@ -118,6 +118,10 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
         }
     }
 
+    public func createdByCurrentUser() -> Bool {
+        return chatClient.currentUserId == channelController.channel?.createdBy?.id
+    }
+    
     public func onlineInfo(for user: ChatUser) -> String {
         if user.isOnline {
             return L10n.Message.Title.online
@@ -197,6 +201,16 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
     public func addUserTapped(_ user: ChatUser) {
         channelController.addMembers(userIds: [user.id])
         addUsersShown = false
+    }
+    
+    public func removeUserFromConversation(id: String, completion: @escaping () -> Void) {
+        channelController.removeMembers(userIds: [id]) { [weak self] error in
+            if error != nil {
+                self?.errorShown = true
+            } else {
+                completion()
+            }
+        }
     }
 
     // MARK: - private
