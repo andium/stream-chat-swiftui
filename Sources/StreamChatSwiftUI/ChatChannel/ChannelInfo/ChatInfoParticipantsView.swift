@@ -10,9 +10,17 @@ struct ChatInfoParticipantsView: View {
 
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
+    
+    @StateObject var viewModel: ChatChannelInfoViewModel
 
     var participants: [ParticipantInfo]
     var onItemAppear: (ParticipantInfo) -> Void
+    
+    public init(viewModel: ChatChannelInfoViewModel) {
+        self._viewModel = StateObject(wrappedValue: viewModel)
+        self.participants = viewModel.displayedParticipants
+        self.onItemAppear = viewModel.onParticipantAppear(_:)
+    }
 
     var body: some View {
         List {
