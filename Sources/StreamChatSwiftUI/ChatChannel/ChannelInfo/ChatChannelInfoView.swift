@@ -43,7 +43,6 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                     } else {
                         ChatInfoParticipantsView(
                             viewModel: viewModel,
-                            participants: viewModel.displayedParticipants,
                             onItemAppear: viewModel.onParticipantAppear(_:)
                         )
                         .alert(isPresented: $viewModel.removeUserAlertShown) {

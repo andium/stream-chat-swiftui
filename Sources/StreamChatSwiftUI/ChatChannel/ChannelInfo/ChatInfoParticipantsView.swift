@@ -13,65 +13,63 @@ struct ChatInfoParticipantsView: View {
     
     @StateObject var viewModel: ChatChannelInfoViewModel
 
-    var participants: [ParticipantInfo]
     var onItemAppear: (ParticipantInfo) -> Void
     
-    public init(viewModel: ChatChannelInfoViewModel, participants: [ParticipantInfo], onItemAppear: @escaping (ParticipantInfo) -> Void) {
+    public init(viewModel: ChatChannelInfoViewModel, onItemAppear: @escaping (ParticipantInfo) -> Void) {
         self._viewModel = StateObject(wrappedValue: viewModel)
-        self.participants = participants
         self.onItemAppear = onItemAppear
     }
 
     var body: some View {
         LazyVStack {
-            if (chatClient.currentUserController().currentUser?.userRole == .admin || viewModel.createdByCurrentUser()) {
-                ForEach(participants) { participant in
-                    HStack {
-                        MessageAvatarView(avatarURL: participant.chatUser.imageURL)
+            ForEach(viewModel.participants) { participant in
+                    if ((chatClient.currentUserController().currentUser?.userRole == .admin || viewModel.createdByCurrentUser()) && chatClient.currentUserId != participant.id) {
+                        HStack {
+                            MessageAvatarView(avatarURL: participant.chatUser.imageURL)
 
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(participant.displayName)
-                                .lineLimit(1)
-                                .font(fonts.bodyBold)
-                            Text(participant.onlineInfoText)
-                                .font(fonts.footnote)
-                                .foregroundColor(Color(colors.textLowEmphasis))
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(participant.displayName)
+                                    .lineLimit(1)
+                                    .font(fonts.bodyBold)
+                                Text(participant.onlineInfoText)
+                                    .font(fonts.footnote)
+                                    .foregroundColor(Color(colors.textLowEmphasis))
+                            }
+                            Spacer()
+                            
+                            Button(role: .destructive) {
+                                viewModel.removeUserAlertShown = true
+                                viewModel.participantToRemove = participant
+                            } label: {
+                                Label("Remove User", systemImage: "minus.circle.fill")
+                            }
                         }
-                        Spacer()
-                        
-                        Button(role: .destructive) {
-                            viewModel.removeUserAlertShown = true
-                            viewModel.participantToRemove = participant
-                        } label: {
-                            Label("Remove User", systemImage: "minus.circle.fill")
+                        .padding(.all, 8)
+                        .onAppear {
+                            onItemAppear(participant)
                         }
-                    }
-                    .padding(.all, 8)
-                    .onAppear {
-                        onItemAppear(participant)
-                    }
-                }
-            } else {
-                ForEach(participants) { participant in
-                    HStack {
-                        MessageAvatarView(avatarURL: participant.chatUser.imageURL)
+                    } else {
+                        HStack {
+                            MessageAvatarView(avatarURL: participant.chatUser.imageURL)
 
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(participant.displayName)
-                                .lineLimit(1)
-                                .font(fonts.bodyBold)
-                            Text(participant.onlineInfoText)
-                                .font(fonts.footnote)
-                                .foregroundColor(Color(colors.textLowEmphasis))
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text(participant.displayName)
+                                    .lineLimit(1)
+                                    .font(fonts.bodyBold)
+                                Text(participant.onlineInfoText)
+                                    .font(fonts.footnote)
+                                    .foregroundColor(Color(colors.textLowEmphasis))
+                            }
+                            Spacer()
+                            
                         }
-                        Spacer()
+                        .padding(.all, 8)
+                        .onAppear {
+                            onItemAppear(participant)
+                        }
                     }
-                    .padding(.all, 8)
-                    .onAppear {
-                        onItemAppear(participant)
-                    }
+                    
                 }
-            }
         }
         .background(Color(colors.background))
     }
