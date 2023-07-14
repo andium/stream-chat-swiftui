@@ -24,6 +24,8 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
 
     @Published public var memberListCollapsed = true
     @Published public var leaveGroupAlertShown = false
+    @Published public var removeUserAlertShown = false
+    @Published public var participantToRemove: ParticipantInfo? = nil
     @Published public var errorShown = false
     @Published public var channelName: String
     @Published public var channel: ChatChannel {

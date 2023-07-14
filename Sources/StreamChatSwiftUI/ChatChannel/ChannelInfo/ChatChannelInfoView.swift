@@ -7,16 +7,16 @@ import SwiftUI
 
 // View for the channel info screen.
 public struct ChatChannelInfoView: View, KeyboardReadable {
-
+    
     @Injected(\.images) private var images
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
-
+    
     @StateObject private var viewModel: ChatChannelInfoViewModel
     private var shownFromMessageList: Bool
-
+    
     @Environment(\.presentationMode) var presentationMode
-
+    
     public init(
         channel: ChatChannel,
         shownFromMessageList: Bool = false
@@ -26,12 +26,12 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
         )
         self.shownFromMessageList = shownFromMessageList
     }
-
+    
     init(viewModel: ChatChannelInfoViewModel) {
         _viewModel = StateObject(wrappedValue: viewModel)
         shownFromMessageList = false
     }
-
+    
     public var body: some View {
         ZStack {
             ScrollView {
@@ -43,11 +43,21 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                     } else {
                         ChatInfoParticipantsView(
                             viewModel: viewModel,
-                            participants: viewModel.participants,
+                            participants: viewModel.displayedParticipants,
                             onItemAppear: viewModel.onParticipantAppear(_:)
                         )
+                        .alert(isPresented: $viewModel.removeUserAlertShown) {
+                            let title = "Are you sure you want to remove this user?"
+                            let message = "They will no longer have access to this channel"
+                            let buttonTitle = "Remove user"
+                            return Alert(title: Text(title),
+                                         message: Text(message),
+                                         primaryButton: .destructive(Text(buttonTitle), action: { viewModel.removeUserFromConversation(id: viewModel.participantToRemove!.id) { debugPrint("\(viewModel.participantToRemove!.id) Removed")} }),
+                                         secondaryButton: .cancel()
+                            )
+                        }
                     }
-
+                    
                     if viewModel.showMoreUsersButton {
                         ChatChannelInfoButton(
                             title: L10n.ChatInfo.Users.loadMore(viewModel.notDisplayedParticipantsCount),
@@ -57,16 +67,16 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                             viewModel.memberListCollapsed = false
                         }
                     }
-
+                    
                     ChannelInfoDivider()
-
+                    
                     ChatInfoOptionsView(viewModel: viewModel)
-
+                    
                     ChannelInfoDivider()
                         .alert(isPresented: $viewModel.errorShown) {
                             Alert.defaultErrorAlert
                         }
-
+                    
                     if viewModel.shouldShowLeaveConversationButton {
                         ChatChannelInfoButton(
                             title: viewModel.leaveButtonTitle,
@@ -79,7 +89,7 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                             let title = viewModel.leaveButtonTitle
                             let message = viewModel.leaveConversationDescription
                             let buttonTitle = viewModel.leaveButtonTitle
-
+                            
                             return Alert(
                                 title: Text(title),
                                 message: Text(message),
@@ -100,11 +110,11 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
             }
             .overlay(
                 viewModel.addUsersShown ?
-                    Color.black.opacity(0.3).edgesIgnoringSafeArea(.all) : nil
+                Color.black.opacity(0.3).edgesIgnoringSafeArea(.all) : nil
             )
             .blur(radius: viewModel.addUsersShown ? 6 : 0)
             .allowsHitTesting(!viewModel.addUsersShown)
-
+            
             if viewModel.addUsersShown {
                 VStack {
                     Rectangle()
@@ -137,19 +147,19 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                     }
                 }
             }
-
+            
             ToolbarItem(placement: .navigationBarTrailing) {
                 viewModel.channel.isDirectMessageChannel ? nil :
-                    Button {
-                        viewModel.addUsersShown = true
-                    } label: {
-                        Image(systemName: "person.badge.plus")
-                            .customizable()
-                            .foregroundColor(Color.white)
-                            .padding(.all, 8)
-                            .background(colors.tintColor)
-                            .clipShape(Circle())
-                    }
+                Button {
+                    viewModel.addUsersShown = true
+                } label: {
+                    Image(systemName: "person.badge.plus")
+                        .customizable()
+                        .foregroundColor(Color.white)
+                        .padding(.all, 8)
+                        .background(colors.tintColor)
+                        .clipShape(Circle())
+                }
             }
         }
         .onReceive(keyboardWillChangePublisher) { visible in
