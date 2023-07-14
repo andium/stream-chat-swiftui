@@ -16,7 +16,7 @@ struct ChatInfoParticipantsView: View {
     var participants: [ParticipantInfo]
     var onItemAppear: (ParticipantInfo) -> Void
     
-    public init(viewModel: ChatChannelInfoViewModel, participants: [ParticipantInfo], onItemAppear: (ParticipantInfo) -> Void) {
+    public init(viewModel: ChatChannelInfoViewModel, participants: [ParticipantInfo], onItemAppear: @escaping (ParticipantInfo) -> Void) {
         self._viewModel = StateObject(wrappedValue: viewModel)
         self.participants = participants
         self.onItemAppear = onItemAppear
