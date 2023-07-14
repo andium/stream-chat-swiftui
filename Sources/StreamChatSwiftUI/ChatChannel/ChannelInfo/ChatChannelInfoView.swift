@@ -43,7 +43,7 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                     } else {
                         ChatInfoParticipantsView(
                             viewModel: viewModel,
-                            participants: viewModel.displayedParticipants,
+                            participants: viewModel.participants,
                             onItemAppear: viewModel.onParticipantAppear(_:)
                         )
                     }
