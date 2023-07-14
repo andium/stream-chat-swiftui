@@ -34,6 +34,13 @@ struct ChatInfoParticipantsView: View {
                 .onAppear {
                     onItemAppear(participant)
                 }
+                .swipeActions(edge: .leading) {
+                    Button(role: .destructive) {
+                        // delete the swiped participant here
+                    } label: {
+                        Label("Remove User", systemImage: "minus.circle.fill")
+                    }
+                }
             }
         }
         .background(Color(colors.background))
