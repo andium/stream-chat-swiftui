@@ -12,7 +12,7 @@ struct ChatInfoParticipantsView: View {
     @Injected(\.colors) private var colors
     
     @StateObject var viewModel: ChatChannelInfoViewModel
-
+    
     var participants: [ParticipantInfo]
     var onItemAppear: (ParticipantInfo) -> Void
     
@@ -21,57 +21,53 @@ struct ChatInfoParticipantsView: View {
         self.participants = participants
         self.onItemAppear = onItemAppear
     }
-
+    
     var body: some View {
-        LazyVStack {
+        List(participants) { participant in
             if (chatClient.currentUserController().currentUser?.userRole == .admin || viewModel.createdByCurrentUser()) {
-                ForEach(participants) { participant in
-                    HStack {
-                        MessageAvatarView(avatarURL: participant.chatUser.imageURL)
-
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(participant.displayName)
-                                .lineLimit(1)
-                                .font(fonts.bodyBold)
-                            Text(participant.onlineInfoText)
-                                .font(fonts.footnote)
-                                .foregroundColor(Color(colors.textLowEmphasis))
-                        }
-                        Spacer()
+                HStack {
+                    MessageAvatarView(avatarURL: participant.chatUser.imageURL)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(participant.displayName)
+                            .lineLimit(1)
+                            .font(fonts.bodyBold)
+                        Text(participant.onlineInfoText)
+                            .font(fonts.footnote)
+                            .foregroundColor(Color(colors.textLowEmphasis))
                     }
-                    .padding(.all, 8)
-                    .onAppear {
-                        onItemAppear(participant)
-                    }
-                    .swipeActions(edge: .leading) {
-                        Button(role: .destructive) {
-                            viewModel.removeUserFromConversation(id: participant.id) {
-                                debugPrint("\(participant.displayName) Removed")
-                            }
-                        } label: {
-                            Label("Remove User", systemImage: "minus.circle.fill")
+                    Spacer()
+                }
+                .padding(.all, 8)
+                .onAppear {
+                    onItemAppear(participant)
+                }
+                .swipeActions(edge: .leading) {
+                    Button(role: .destructive) {
+                        viewModel.removeUserFromConversation(id: participant.id) {
+                            debugPrint("\(participant.displayName) Removed")
                         }
+                    } label: {
+                        Label("Remove User", systemImage: "minus.circle.fill")
                     }
                 }
             } else {
-                ForEach(participants) { participant in
-                    HStack {
-                        MessageAvatarView(avatarURL: participant.chatUser.imageURL)
-
-                        VStack(alignment: .leading, spacing: 4) {
-                            Text(participant.displayName)
-                                .lineLimit(1)
-                                .font(fonts.bodyBold)
-                            Text(participant.onlineInfoText)
-                                .font(fonts.footnote)
-                                .foregroundColor(Color(colors.textLowEmphasis))
-                        }
-                        Spacer()
+                HStack {
+                    MessageAvatarView(avatarURL: participant.chatUser.imageURL)
+                    
+                    VStack(alignment: .leading, spacing: 4) {
+                        Text(participant.displayName)
+                            .lineLimit(1)
+                            .font(fonts.bodyBold)
+                        Text(participant.onlineInfoText)
+                            .font(fonts.footnote)
+                            .foregroundColor(Color(colors.textLowEmphasis))
                     }
-                    .padding(.all, 8)
-                    .onAppear {
-                        onItemAppear(participant)
-                    }
+                    Spacer()
+                }
+                .padding(.all, 8)
+                .onAppear {
+                    onItemAppear(participant)
                 }
             }
         }
@@ -83,11 +79,11 @@ public struct ParticipantInfo: Identifiable {
     public var id: String {
         chatUser.id
     }
-
+    
     public let chatUser: ChatUser
     public let displayName: String
     public let onlineInfoText: String
-
+    
     public init(chatUser: ChatUser, displayName: String, onlineInfoText: String) {
         self.chatUser = chatUser
         self.displayName = displayName
