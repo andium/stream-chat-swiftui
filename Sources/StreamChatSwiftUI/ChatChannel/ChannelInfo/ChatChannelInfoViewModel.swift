@@ -210,7 +210,9 @@ public class ChatChannelInfoViewModel: ObservableObject, ChatChannelControllerDe
             if error != nil {
                 self?.errorShown = true
             } else {
-                self.participants = self.participants.filter { $0.id != id }
+                if let self = self {
+                    self.participants = self.participants.filter { $0.id != id }
+                }
                 completion()
             }
         }
