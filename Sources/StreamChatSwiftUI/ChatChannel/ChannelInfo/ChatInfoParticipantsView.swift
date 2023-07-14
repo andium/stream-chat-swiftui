@@ -15,7 +15,7 @@ struct ChatInfoParticipantsView: View {
     var onItemAppear: (ParticipantInfo) -> Void
 
     var body: some View {
-        LazyVStack {
+        List {
             ForEach(participants) { participant in
                 HStack {
                     MessageAvatarView(avatarURL: participant.chatUser.imageURL)
