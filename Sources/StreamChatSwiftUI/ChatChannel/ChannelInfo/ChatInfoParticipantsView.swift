@@ -7,7 +7,7 @@ import SwiftUI
 
 /// View for the chat info participants.
 struct ChatInfoParticipantsView: View {
-
+    @Injected(\.chatClient) private var chatClient
     @Injected(\.fonts) private var fonts
     @Injected(\.colors) private var colors
     
@@ -24,31 +24,62 @@ struct ChatInfoParticipantsView: View {
 
     var body: some View {
         List {
-            ForEach(participants) { participant in
-                HStack {
-                    MessageAvatarView(avatarURL: participant.chatUser.imageURL)
+            if chatClient.currentUserController().currentUser?.userRole == .admin {
+                ForEach(participants) { participant in
+                    HStack {
+                        MessageAvatarView(avatarURL: participant.chatUser.imageURL)
 
-                    VStack(alignment: .leading, spacing: 4) {
-                        Text(participant.displayName)
-                            .lineLimit(1)
-                            .font(fonts.bodyBold)
-                        Text(participant.onlineInfoText)
-                            .font(fonts.footnote)
-                            .foregroundColor(Color(colors.textLowEmphasis))
-                    }
-                    Spacer()
-                }
-                .padding(.all, 8)
-                .onAppear {
-                    onItemAppear(participant)
-                }
-                .swipeActions(edge: .leading) {
-                    Button(role: .destructive) {
-                        viewModel.removeUserFromConversation(id: participant.id) {
-                            debugPrint("\(participant.displayName) Removed")
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(participant.displayName)
+                                .lineLimit(1)
+                                .font(fonts.bodyBold)
+                            Text(participant.onlineInfoText)
+                                .font(fonts.footnote)
+                                .foregroundColor(Color(colors.textLowEmphasis))
                         }
-                    } label: {
-                        Label("Remove User", systemImage: "minus.circle.fill")
+                        Spacer()
+                    }
+                    .padding(.all, 8)
+                    .onAppear {
+                        onItemAppear(participant)
+                    }
+                    .swipeActions(edge: .leading) {
+                        Button(role: .destructive) {
+                            viewModel.removeUserFromConversation(id: participant.id) {
+                                debugPrint("\(participant.displayName) Removed")
+                            }
+                        } label: {
+                            Label("Remove User", systemImage: "minus.circle.fill")
+                        }
+                    }
+                }
+            } else {
+                ForEach(participants) { participant in
+                    HStack {
+                        MessageAvatarView(avatarURL: participant.chatUser.imageURL)
+
+                        VStack(alignment: .leading, spacing: 4) {
+                            Text(participant.displayName)
+                                .lineLimit(1)
+                                .font(fonts.bodyBold)
+                            Text(participant.onlineInfoText)
+                                .font(fonts.footnote)
+                                .foregroundColor(Color(colors.textLowEmphasis))
+                        }
+                        Spacer()
+                    }
+                    .padding(.all, 8)
+                    .onAppear {
+                        onItemAppear(participant)
+                    }
+                    .swipeActions(edge: .leading) {
+                        Button(role: .destructive) {
+                            viewModel.removeUserFromConversation(id: participant.id) {
+                                debugPrint("\(participant.displayName) Removed")
+                            }
+                        } label: {
+                            Label("Remove User", systemImage: "minus.circle.fill")
+                        }
                     }
                 }
             }
