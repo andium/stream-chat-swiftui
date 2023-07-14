@@ -16,10 +16,10 @@ struct ChatInfoParticipantsView: View {
     var participants: [ParticipantInfo]
     var onItemAppear: (ParticipantInfo) -> Void
     
-    public init(viewModel: ChatChannelInfoViewModel) {
+    public init(viewModel: ChatChannelInfoViewModel, participants: [ParticipantInfo], onItemAppear: (ParticipantInfo) -> Void) {
         self._viewModel = StateObject(wrappedValue: viewModel)
-        self.participants = viewModel.displayedParticipants
-        self.onItemAppear = viewModel.onParticipantAppear(_:)
+        self.participants = participants
+        self.onItemAppear = onItemAppear
     }
 
     var body: some View {
@@ -71,15 +71,6 @@ struct ChatInfoParticipantsView: View {
                     .padding(.all, 8)
                     .onAppear {
                         onItemAppear(participant)
-                    }
-                    .swipeActions(edge: .leading) {
-                        Button(role: .destructive) {
-                            viewModel.removeUserFromConversation(id: participant.id) {
-                                debugPrint("\(participant.displayName) Removed")
-                            }
-                        } label: {
-                            Label("Remove User", systemImage: "minus.circle.fill")
-                        }
                     }
                 }
             }
