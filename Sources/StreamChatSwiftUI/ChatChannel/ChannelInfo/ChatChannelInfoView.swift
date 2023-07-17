@@ -139,7 +139,7 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
                             .foregroundColor(Color(colors.text))
                     } else {
                         ChannelTitleView(
-                            channel: viewModel.$channel,
+                            channel: $viewModel.channel,
                             shouldShowTypingIndicator: false
                         )
                         .id(viewModel.channelId)
