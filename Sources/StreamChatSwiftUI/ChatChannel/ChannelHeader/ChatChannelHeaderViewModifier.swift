@@ -51,7 +51,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
             ChannelTitleView(
-                channel: channel,
+                channel: $channel,
                 shouldShowTypingIndicator: shouldShowTypingIndicator
             )
             .accessibilityIdentifier("ChannelTitleView")
@@ -116,7 +116,7 @@ struct ChannelTitleView: View {
     @Injected(\.colors) private var colors
     @Injected(\.chatClient) private var chatClient
 
-    var channel: ChatChannel
+    @Binding var channel: ChatChannel
     var shouldShowTypingIndicator: Bool
 
     private var currentUserId: String {
