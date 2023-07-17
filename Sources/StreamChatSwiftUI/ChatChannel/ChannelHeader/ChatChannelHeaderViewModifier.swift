@@ -139,7 +139,7 @@ struct ChannelTitleView: View {
                     SubtitleText(text: channel.typingIndicatorString(currentUserId: currentUserId))
                 }
             } else {
-                Text("\(channel.memberCount) members \(channel.onlineInfoText(currentUserId: currentUserId)) online")
+                Text("\(channel.memberCount) members \(channel.watcherCount) online")
                     .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
                     .accessibilityIdentifier("chatOnlineInfo")
