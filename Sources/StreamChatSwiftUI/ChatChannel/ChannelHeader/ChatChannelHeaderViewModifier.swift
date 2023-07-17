@@ -34,16 +34,16 @@ public struct DefaultChatChannelHeader: ToolbarContent {
         .isEmpty
     }
 
-    public var channel: ChatChannel
+    @Binding public var channel: ChatChannel
     public var headerImage: UIImage
     @Binding public var isActive: Bool
 
     public init(
-        channel: ChatChannel,
+        channel: Binding<ChatChannel>,
         headerImage: UIImage,
         isActive: Binding<Bool>
     ) {
-        self.channel = channel
+        self._channel = channel
         self.headerImage = headerImage
         _isActive = isActive
     }
@@ -96,12 +96,12 @@ public struct DefaultChannelHeaderModifier: ChatChannelHeaderViewModifier {
     @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
     @State private var isActive: Bool = false
 
-    public var channel: ChatChannel
+    @State public var channel: ChatChannel
 
     public func body(content: Content) -> some View {
         content.toolbar {
             DefaultChatChannelHeader(
-                channel: channel,
+                channel: $channel,
                 headerImage: channelHeaderLoader.image(for: channel),
                 isActive: $isActive
             )
@@ -139,7 +139,7 @@ struct ChannelTitleView: View {
                     SubtitleText(text: channel.typingIndicatorString(currentUserId: currentUserId))
                 }
             } else {
-                Text(channel.onlineInfoText(currentUserId: currentUserId))
+                Text("\(channel.memberCount)")
                     .font(fonts.footnote)
                     .foregroundColor(Color(colors.textLowEmphasis))
                     .accessibilityIdentifier("chatOnlineInfo")
