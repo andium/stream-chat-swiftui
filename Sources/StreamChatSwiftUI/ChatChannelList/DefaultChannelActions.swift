@@ -217,7 +217,7 @@ extension ChannelAction {
             isDestructive: false
         )
 
-        viewInfo.navigationDestination = AnyView(ChatChannelInfoView(channel: channel))
+        viewInfo.navigationDestination = AnyView(ChatChannelInfoView(viewModel: ChatChannelInfoViewModel(channel: channel)))
 
         return viewInfo
     }

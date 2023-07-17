@@ -34,16 +34,20 @@ public struct DefaultChatChannelHeader: ToolbarContent {
         .isEmpty
     }
 
-    @Binding public var channel: ChatChannel
+    public var channel: ChatChannel
     public var headerImage: UIImage
     @Binding public var isActive: Bool
+    @StateObject private var viewModel: ChatChannelInfoViewModel
 
     public init(
-        channel: Binding<ChatChannel>,
+        channel: ChatChannel,
         headerImage: UIImage,
         isActive: Binding<Bool>
     ) {
-        self._channel = channel
+        self.channel = channel
+        self._viewModel = StateObject(
+            wrappedValue: ChatChannelInfoViewModel(channel: channel)
+        )
         self.headerImage = headerImage
         _isActive = isActive
     }
@@ -51,7 +55,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
     public var body: some ToolbarContent {
         ToolbarItem(placement: .principal) {
             ChannelTitleView(
-                channel: $channel,
+                channel: $viewModel.channel,
                 shouldShowTypingIndicator: shouldShowTypingIndicator
             )
             .accessibilityIdentifier("ChannelTitleView")
@@ -73,7 +77,7 @@ public struct DefaultChatChannelHeader: ToolbarContent {
                 }
 
                 NavigationLink(isActive: $isActive) {
-                    LazyView(ChatChannelInfoView(channel: channel, shownFromMessageList: true))
+                    LazyView(ChatChannelInfoView(viewModel: viewModel, shownFromMessageList: true))
                 } label: {
                     EmptyView()
                 }
@@ -96,12 +100,12 @@ public struct DefaultChannelHeaderModifier: ChatChannelHeaderViewModifier {
     @StateObject private var channelHeaderLoader = ChannelHeaderLoader()
     @State private var isActive: Bool = false
 
-    @State public var channel: ChatChannel
+    public var channel: ChatChannel
 
     public func body(content: Content) -> some View {
         content.toolbar {
             DefaultChatChannelHeader(
-                channel: $channel,
+                channel: channel,
                 headerImage: channelHeaderLoader.image(for: channel),
                 isActive: $isActive
             )

@@ -12,23 +12,21 @@ public struct ChatChannelInfoView: View, KeyboardReadable {
     @Injected(\.colors) private var colors
     @Injected(\.fonts) private var fonts
     
-    @StateObject private var viewModel: ChatChannelInfoViewModel
+    @ObservedObject private var viewModel: ChatChannelInfoViewModel
     private var shownFromMessageList: Bool
     
     @Environment(\.presentationMode) var presentationMode
     
     public init(
-        channel: ChatChannel,
+        viewModel: ChatChannelInfoViewModel,
         shownFromMessageList: Bool = false
     ) {
-        _viewModel = StateObject(
-            wrappedValue: ChatChannelInfoViewModel(channel: channel)
-        )
+        self.viewModel = viewModel
         self.shownFromMessageList = shownFromMessageList
     }
     
     init(viewModel: ChatChannelInfoViewModel) {
-        _viewModel = StateObject(wrappedValue: viewModel)
+        self.viewModel = viewModel
         shownFromMessageList = false
     }
     
